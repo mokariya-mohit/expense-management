@@ -39,5 +39,4 @@ This API provides CRUD operations for expenses with authentication and role-base
 - Express.js
 - MongoDB
 - JWT
-- Redis (for caching)
 - Swagger (API Documentation)
