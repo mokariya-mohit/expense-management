@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: Expense Management API
+  description: API for managing expenses
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: User registered successfully
+        "400":
+          description: Invalid input
+
+  /auth/login:
+    post:
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User logged in successfully
+        "401":
+          description: Invalid credentials
+
+  /expenses:
+    post:
+      summary: Add a new expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Expense"
+      responses:
+        "201":
+          description: Expense added successfully
+        "400":
+          description: Invalid input
+
+    get:
+      summary: Get all expenses
+      responses:
+        "200":
+          description: Successfully retrieved all expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Expense"
+        "500":
+          description: Server error
+
+    patch:
+      summary: Update an existing expense
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: The ID of the expense to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Expense"
+      responses:
+        "200":
+          description: Expense updated successfully
+        "400":
+          description: Invalid input
+        "404":
+          description: Expense not found
+        "500":
+          description: Server error
+
+    delete:
+      summary: Delete an expense
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: The ID of the expense to delete
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Expense deleted successfully
+        "404":
+          description: Expense not found
+        "500":
+          description: Server error
+
+  /stats:
+    get:
+      summary: Get expense statistics
+      responses:
+        "200":
+          description: Successfully retrieved expense statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalExpenses:
+                    type: number
+                  totalIncome:
+                    type: number
+                  categoryBreakdown:
+                    type: object
+                    additionalProperties:
+                      type: number
+        "500":
+          description: Server error
+
+components:
+  schemas:
+    Expense:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Rent"
+        amount:
+          type: number
+          example: 1200
+        date:
+          type: string
+          format: date
+          example: "2024-09-25"
+        category:
+          type: string
+          enum: [Housing, Food, Transport, Entertainment, Others]
+          example: "Housing"
+        paymentMethod:
+          type: string
+          example: "Credit Card"
+        description:
+          type: string
+          example: "Monthly rent payment"
+        user:
+          type: string
+          example: "user123"
